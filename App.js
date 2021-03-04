@@ -2,14 +2,15 @@ import React, { Component } from "react";
 import * as firebase from "firebase";
 import { View, Text } from "react-native";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+/** store this as env variables */
 const firebaseConfig = {
-  apiKey: "AIzaSyCcS_rHm1TPzUpL93qHAwFNAraEUP7UASs",
-  authDomain: "instagurl-rn.firebaseapp.com",
-  projectId: "instagurl-rn",
-  storageBucket: "instagurl-rn.appspot.com",
-  messagingSenderId: "278202793919",
-  appId: "1:278202793919:web:bf814d69f01be746302b0a",
-  measurementId: "G-H3WQ5RCQBJ",
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  appId: process.env.API_ID,
+  measurementId: process.env.MEASURMENT_ID,
 };
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig);
@@ -44,7 +45,6 @@ export class App extends Component {
   }
   render() {
     const { loggedIn, loaded } = this.state;
-
     if (!loaded) {
       return (
         <View style={{ flex: 1, justifyContent: "center" }}>
@@ -52,17 +52,24 @@ export class App extends Component {
         </View>
       );
     }
+    if (!loggedIn) {
+      return (
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Landing">
+            <Stack.Screen
+              name="Landing"
+              component={LandingScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      );
+    }
     return (
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Landing">
-          <Stack.Screen
-            name="Landing"
-            component={LandingScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="Register" component={RegisterScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <Text>User is loggedIn</Text>
+      </View>
     );
   }
 }

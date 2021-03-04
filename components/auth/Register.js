@@ -13,10 +13,28 @@ export class Register extends Component {
   }
   onSignUp() {
     const { email, password, name } = this.state;
+    /**
+     * the User authentication mode is with email and password,
+     * I'm using the firebase tool for auth the user
+     * */
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then((result) => {
+        /**
+         * After the user is authenticated,
+         * we store it in a firestore database
+         * a new collection call user was created and
+         * it has 2 variables, name and email.
+         */
+        firebase
+          .firestore()
+          .collection("users")
+          .doc(firebase.auth().currentUser.uid)
+          .set({
+            name,
+            email,
+          });
         console.log(result);
       })
       .catch((error) => console.log(error));
